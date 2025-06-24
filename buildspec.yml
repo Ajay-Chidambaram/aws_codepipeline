@@ -10,13 +10,13 @@ phases:
   pre_build:
     commands:
       - echo "Validating file structure..."
-      - test -f pipeline/appspec.yml || (echo "❌ appspec.yml is missing!" && exit 1)
+      - test -f appspec.yml || (echo "❌ appspec.yml is missing!" && exit 1)
       - echo "✅ appspec.yml is present."
 
   build:
     commands:
       - echo "Copying appspec.yml to root..."
-      - cp pipeline/appspec.yml ./appspec.yml
+      - cp appspec.yml ./appspec.yml
       - echo "✅ Done copying."
 
 artifacts:

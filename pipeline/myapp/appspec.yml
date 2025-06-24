@@ -1,13 +1,13 @@
 version: 0.0
 os: linux
 files:
-  - source: /
+  - source: pipeline/myapp/
     destination: /home/ubuntu/myapp
 
 hooks:
   BeforeInstall:
-    - location: scripts/install_dependencies.sh
+    - location: pipeline/myapp/scripts/install_dependencies.sh
       runas: ubuntu
   AfterInstall:
-    - location: scripts/start_server.sh
+    - location: pipeline/myapp/scripts/start_server.sh
       runas: ubuntu

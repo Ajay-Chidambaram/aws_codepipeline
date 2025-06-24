@@ -25,6 +25,8 @@ phases:
       - cp pipeline/myapp/scripts/*.sh scripts/
       - chmod +x scripts/*.sh
       - echo "✅ Build phase complete."
+      - ls
+      - cat appspec.yml
 
 artifacts:
   files:

@@ -15,18 +15,19 @@ phases:
       - test -f pipeline/myapp/scripts/install_dependencies.sh || (echo "❌ install_dependencies.sh missing!" && exit 1)
       - test -f pipeline/myapp/scripts/start_server.sh || (echo "❌ start_server.sh missing!" && exit 1)
       - echo "✅ All required files are present."
-      - echo "Pre-build checks"
-      - cp pipeline/appspec.yml .
 
   build:
     commands:
-      - echo "Making scripts executable..."
-      - chmod +x pipeline/myapp/scripts/*.sh
-      - echo "Copying appspec.yml to root..."
+      - echo "Preparing deployment artifact..."
       - cp pipeline/appspec.yml .
+      - cp pipeline/myapp/index.html .
+      - mkdir scripts
+      - cp pipeline/myapp/scripts/*.sh scripts/
+      - chmod +x scripts/*.sh
       - echo "✅ Build phase complete."
 
 artifacts:
   files:
-    - appspec.yml              
-    - pipeline/myapp/**/*
+    - appspec.yml
+    - index.html
+    - scripts/*

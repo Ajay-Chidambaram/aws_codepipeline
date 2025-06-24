@@ -16,8 +16,9 @@ phases:
   build:
     commands:
       - echo "Copying appspec.yml to root..."
-      - cp appspec.yml ./appspec.yml
-      - echo "✅ Done copying."
+      - ls
+      - cat appspec.yml
+      - echo "✅ verified"
 
 artifacts:
   files:

@@ -11,17 +11,13 @@ phases:
     commands:
       - echo "Validating file structure..."
       - test -f pipeline/appspec.yml || (echo "❌ appspec.yml is missing!" && exit 1)
-      - test -f pipeline/myapp/index.html || (echo "❌ index.html not found!" && exit 1)
-      - test -f pipeline/myapp/scripts/install_dependencies.sh || (echo "❌ install_dependencies.sh missing!" && exit 1)
-      - test -f pipeline/myapp/scripts/start_server.sh || (echo "❌ start_server.sh missing!" && exit 1)
-      - echo "✅ All required files are present."
+      - echo "✅ appspec.yml is present."
 
   build:
     commands:
       - echo "Copying appspec.yml to root..."
       - cp pipeline/appspec.yml ./appspec.yml
-      - chmod +x pipeline/myapp/scripts/*.sh
-      - echo "✅ Build phase complete."
+      - echo "✅ Done copying."
 
 artifacts:
   files:

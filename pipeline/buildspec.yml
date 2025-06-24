@@ -10,18 +10,20 @@ phases:
   pre_build:
     commands:
       - echo "Validating file structure..."
-      - test -f pipeline/myapp/appspec.yml || (echo "❌ appspec.yml is missing!" && exit 1)
-      - test -f pipeline/myapp/index.html || (echo "❌ index.html not found!" && exit 1)
-      - test -f pipeline/myapp/scripts/install_dependencies.sh || (echo "❌ install_dependencies.sh missing!" && exit 1)
-      - test -f pipeline/myapp/scripts/start_server.sh || (echo "❌ start_server.sh missing!" && exit 1)
+      - test -f pipeline/appspec.yml || (echo "❌ appspec.yml is missing!" && exit 1)
+      - test -f pipeline/index.html || (echo "❌ index.html not found!" && exit 1)
+      - test -f pipeline/scripts/install_dependencies.sh || (echo "❌ install_dependencies.sh missing!" && exit 1)
+      - test -f pipeline/scripts/start_server.sh || (echo "❌ start_server.sh missing!" && exit 1)
       - echo "✅ All required files are present."
+      - echo "Pre-build checks"
+      - cp pipeline/myapp/appspec.yml .
 
   build:
     commands:
       - echo "Making scripts executable..."
       - chmod +x pipeline/myapp/scripts/*.sh
       - echo "Copying appspec.yml to root..."
-      - cp pipeline/myapp/appspec.yml .
+      - cp pipeline/appspec.yml .
       - echo "✅ Build phase complete."
 
 artifacts:

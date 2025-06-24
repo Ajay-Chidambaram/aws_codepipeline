@@ -20,9 +20,11 @@ phases:
     commands:
       - echo "Making scripts executable..."
       - chmod +x pipeline/myapp/scripts/*.sh
+      - echo "Copying appspec.yml to root..."
+      - cp pipeline/myapp/appspec.yml .
       - echo "✅ Build phase complete."
 
 artifacts:
   files:
-    - appspec.yml
-    - pipeline/**/*
+    - appspec.yml              
+    - pipeline/myapp/**/*

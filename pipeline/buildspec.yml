@@ -18,18 +18,12 @@ phases:
 
   build:
     commands:
-      - echo "Preparing deployment artifact..."
-      - cp pipeline/appspec.yml .
-      - cp pipeline/myapp/index.html .
-      - mkdir scripts
-      - cp pipeline/myapp/scripts/*.sh scripts/
-      - chmod +x scripts/*.sh
+      - echo "Copying appspec.yml to root..."
+      - cp pipeline/appspec.yml ./appspec.yml
+      - chmod +x pipeline/myapp/scripts/*.sh
       - echo "✅ Build phase complete."
-      - ls
-      - cat appspec.yml
 
 artifacts:
   files:
     - appspec.yml
-    - index.html
-    - scripts/*
+    - pipeline/myapp/**/*

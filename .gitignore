@@ -2,5 +2,5 @@ resource_deployment/.terraform/
 resource_deployment/.terraform.lock.hcl
 resource_deployment/terraform.tfstate
 resource_deployment/terraform.tfstate.backup
-
+resource_deployment/*.pem
 AWS_Codepipeline_Walkthrough.pdf

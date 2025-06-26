@@ -1,51 +1,56 @@
-resource "aws_vpc" "sukesh_vpc" {
+resource "aws_vpc" "ck_vpc" {
   cidr_block = "17.0.0.0/16"
   tags = {
-    Name = "sukesh_vpc"
+    Name = "ck_vpc"
   }
 }
 
 
-resource "aws_internet_gateway" "sukesh_igw" {
-    vpc_id = aws_vpc.sukesh_vpc.id
-    depends_on = [ aws_vpc.sukesh_vpc ]
+resource "aws_internet_gateway" "ck_igw" {
+    vpc_id = aws_vpc.ck_vpc.id
+    depends_on = [ aws_vpc.ck_vpc ]
     tags = {
-      Name = "sukesh_igw"
+      Name = "ck_igw"
     }
 }
 
 
 #public_sn
 
-resource "aws_subnet" "sukesh_pub_sn" {
-  vpc_id = aws_vpc.sukesh_vpc.id
+resource "aws_subnet" "ck_pub_sn" {
+  vpc_id = aws_vpc.ck_vpc.id
   cidr_block = "17.0.1.0/24"
   map_public_ip_on_launch = true
   availability_zone = "us-east-1a"
+
+  tags = {
+    createdby = "ck@presidio.com"
+    modifiedby = "ck@presidio.com"
+  }
 }
 
 
-resource "aws_route_table" "sukesh_route_table" {
-  vpc_id = aws_vpc.sukesh_vpc.id
+resource "aws_route_table" "ck_route_table" {
+  vpc_id = aws_vpc.ck_vpc.id
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.sukesh_igw.id
+    gateway_id = aws_internet_gateway.ck_igw.id
   }
   tags = {
-    Name = "sukesh_rt"
+    Name = "ck_rt"
   }
 }
 
-resource "aws_route_table_association" "sukesh_rt_asc" {
-  subnet_id = aws_subnet.sukesh_pub_sn.id
-  route_table_id = aws_route_table.sukesh_route_table.id
+resource "aws_route_table_association" "ck_rt_asc" {
+  subnet_id = aws_subnet.ck_pub_sn.id
+  route_table_id = aws_route_table.ck_route_table.id
 }
 
 
 #sg
-resource "aws_security_group" "sukesh_sg" {
+resource "aws_security_group" "ck_sg" {
   name = "allow_access"
-  vpc_id = aws_vpc.sukesh_vpc.id
+  vpc_id = aws_vpc.ck_vpc.id
   ingress{
         description = "SSH"
         from_port = 22
@@ -68,18 +73,43 @@ resource "aws_security_group" "sukesh_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   } 
   tags = {
-    Name = "sukesh_sg"
+    Name = "ck_sg"
   }
 }
 
+# IAM role for EC2
+resource "aws_iam_role" "ec2_role" {
+  name = "ck-ec2-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        },
+        Effect = "Allow",
+        Sid = ""
+      },
+    ]
+  })
+}
+
+# Instance profile
+resource "aws_iam_instance_profile" "ec2_instance_profile" {
+  name = "ec2-instance-profile"
+  role = aws_iam_role.ec2_role.name
+}
 
 # EC2 Instance
 resource "aws_instance" "web" {
   ami           = "ami-020cba7c55df1f615"
   instance_type = "t2.micro"
-  subnet_id     = aws_subnet.sukesh_pub_sn.id
+  subnet_id     = aws_subnet.ck_pub_sn.id
   key_name      = var.key_name
-  vpc_security_group_ids = [aws_security_group.sukesh_sg.id]
+  vpc_security_group_ids = [aws_security_group.ck_sg.id]
+  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
 
   associate_public_ip_address = true
   user_data = <<-EOF
@@ -116,21 +146,21 @@ variable "key_name" {
 # #codedeploy
 
 
-# resource "aws_codedeploy_app" "sukesh_web_app" {
-#   name = "MyApp"
+# resource "aws_codedeploy_app" "ck_web_app" {
+#   name = "aws-demo-app"
 #   compute_platform = "Server"
 # }
 
 # resource "aws_codedeploy_deployment_group" "web_app_group" {
-#   app_name              = aws_codedeploy_app.web_app.name
+#   app_name              = aws_codedeploy_app.ck_web_app.name
 #   deployment_group_name = "MyDeploymentGroup"
 #   service_role_arn      = aws_iam_role.codedeploy_service.arn
 
 #   ec2_tag_set {
 #     ec2_tag_filter {
-#       key   = "Role"
+#       key   = "createdby"
 #       type  = "KEY_AND_VALUE"
-#       value = "CodeDeployTarget"
+#       value = "ck@presidio.com"
 #     }
 #   }
 

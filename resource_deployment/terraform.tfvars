@@ -1,1 +1,1 @@
-key_name = "my_ec2_key"
+key_name = "ck-demo-keypair"

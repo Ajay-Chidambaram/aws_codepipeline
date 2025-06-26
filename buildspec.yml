@@ -24,3 +24,4 @@ artifacts:
   files:
     - appspec.yml
     - pipeline/myapp/**/*
+    
